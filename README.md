@@ -35,13 +35,13 @@ The entire source code with running instructions. Include a folder named ”test
 **Example:**
 
 **Input:** 
-The input file format must be named ”input x.txt”(with x is number of input). Ex ”input 1.txt”). <br>
+The input file format must be named ”input x.txt”(with x is number of input). Ex ”input 1.txt”. <br>
 3, _, 2, _ <br>
 _, _, 2, _ <br>
 _, 3, 1, _ 
 
 **Output:** 
-The output file format must be named ”output x.txt”(with x is number of output). Ex ”output 1.txt”). <br>
+The output file format must be named ”output x.txt”(with x is number of output). Ex ”output 1.txt”. <br>
 3, T, 2, G <br>
 T, T, 2, G <br>
 T, 3, 1, G 
@@ -57,12 +57,18 @@ A video recording of the process of running the tests and the results of your pr
 
 ## III. Requirements
 
-| No. | Criteria Scores                                                                                                                                                                                             |
-|-----|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1   | Solution description: Describe the correct logical principles for generating CNFs. 20%                                                                                                                      |
-| 2   | Generate CNFs automatically 10%                                                                                                                                                                             |
-| 3   | Use pysat library to solve CNFs correctly 10%                                                                                                                                                               |
-| 4   | Program brute-force algorithm to compare with using library(speed) 10%                                                                                                                                      |
-| 5   | Program backtracking algorithm to compare with using library (speed) 10%                                                                                                                                    |
-| 6   | Documents and other resources that you need to write and analysis in your report: 40% <br> _Thoroughness in analysis and experimentation._ <br> _Give at least 3 test cases with different sizes (5x5, 11x11, 20x20) to check your solution._ <br> _Comparing results and performance_
+| No. | Criteria                                                                                           | Scores |
+|-----|----------------------------------------------------------------------------------------------------|--------|
+| 1   | Solution description: Describe the correct logical principles for generating CNFs.                 |  20%   |
+| 2   | Generate CNFs automatically 10%                                                                    |  10%   |
+| 3   | Use pysat library to solve CNFs correctly 10%                                                      |  10%   |
+| 4   | Program brute-force algorithm to compare with using library(speed) 10%                             |  10%   |
+| 5   | Program backtracking algorithm to compare with using library (speed) 10%                           |  10%   |
+| 6   | Documents and other resources that you need to write and analysis in your report <br>              |  40%   |
+
+> [!Note]
+> In Requirement No. 6 of the report:
+> - _Thoroughness in analysis and experimentation._ <br>
+> - _Give at least 3 test cases with different sizes (5x5, 11x11, 20x20) to check your solution._ <br>
+> - _Comparing results and performance_
  
