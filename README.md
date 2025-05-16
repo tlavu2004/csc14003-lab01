@@ -60,11 +60,11 @@ A video recording of the process of running the tests and the results of your pr
 | No. | Criteria                                                                                           | Scores |
 |-----|----------------------------------------------------------------------------------------------------|--------|
 | 1   | Solution description: Describe the correct logical principles for generating CNFs.                 |  20%   |
-| 2   | Generate CNFs automatically 10%                                                                    |  10%   |
-| 3   | Use pysat library to solve CNFs correctly 10%                                                      |  10%   |
-| 4   | Program brute-force algorithm to compare with using library(speed) 10%                             |  10%   |
-| 5   | Program backtracking algorithm to compare with using library (speed) 10%                           |  10%   |
-| 6   | Documents and other resources that you need to write and analysis in your report <br>              |  40%   |
+| 2   | Generate CNFs automatically                                                                        |  10%   |
+| 3   | Use pysat library to solve CNFs correctly                                                          |  10%   |
+| 4   | Program brute-force algorithm to compare with using library(speed)                                 |  10%   |
+| 5   | Program backtracking algorithm to compare with using library (speed)                               |  10%   |
+| 6   | Documents and other resources that you need to write and analysis in your report                   |  40%   |
 
 > [!Note]
 > In Requirement No. 6 of the report:
