@@ -1,0 +1,1 @@
+from .cnf_generator import CNFGenerator
