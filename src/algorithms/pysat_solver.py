@@ -61,11 +61,11 @@ class PySATSolver:
         
         return [
             [
-                str(board[i][j]) if isinstance(board[i][j], int)
-                else ("T" if variable_map[i, j] in self._model else "G")
-                for j in range(len(board[0]))
+                str(board[row][column]) if isinstance(board[row][column], int)
+                else ("T" if variable_map[row, column] in self._model else "G")
+                for column in range(len(board[0]))
             ]
-            for i in range(len(board))
+            for row in range(len(board))
         ]
 
     def reset(self):

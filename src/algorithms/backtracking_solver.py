@@ -7,7 +7,7 @@ class BacktrackingSolver:
         self.assignments = []
         self.unassigned_variables = []
         self.num_rows = 0
-        self.num_cols = 0
+        self.num_columns = 0
         self.solved = False
         self.variable_to_clauses = {}
 
@@ -35,10 +35,10 @@ class BacktrackingSolver:
             self.solved = True
             self.solution = [row[:] for row in self.board]
             for variable_idx in range(1, len(self.assignments)):
-                row = (variable_idx - 1) // self.num_cols
-                col = (variable_idx - 1) % self.num_cols
+                row = (variable_idx - 1) // self.num_columns
+                column = (variable_idx - 1) % self.num_columns
                 if self.assignments[variable_idx] != -1:
-                    self.solution[row][col] = "T" if self.assignments[variable_idx] == 1 else "G"
+                    self.solution[row][column] = "T" if self.assignments[variable_idx] == 1 else "G"
             return
 
         variable_idx = self.unassigned_variables[index]
@@ -55,7 +55,7 @@ class BacktrackingSolver:
         self.board = board
         self.cnf = [list(set(clause)) for clause in cnf]
         self.variable_map = variable_map
-        self.num_rows, self.num_cols = len(board), len(board[0])
+        self.num_rows, self.num_columns = len(board), len(board[0])
         self.solved = False
         self.variable_to_clauses = {}
 
@@ -69,10 +69,10 @@ class BacktrackingSolver:
         self.assignments = [-1] * (max_variable_index + 1)
 
         self.unassigned_variables = [
-            self.variable_map[row, col]
+            self.variable_map[row, column]
             for row in range(self.num_rows)
-            for col in range(self.num_cols)
-            if board[row][col] == "_"
+            for column in range(self.num_columns)
+            if board[row][column] == "_"
         ]
         self.unassigned_variables.sort(key=lambda idx: -len(self.variable_to_clauses.get(idx, [])))
 

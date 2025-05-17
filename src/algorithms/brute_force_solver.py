@@ -2,12 +2,12 @@ class BruteforceSolver:
     def __init__(self):
         self.board = []  # 2D board with "_" (unknown), "T" (trap), or "G" (gem)
         self.cnf = []  # CNF clauses representing game rules (list of lists of literals)
-        self.variable_map = {}  # Mapping from (row, col) to variable index (int)
+        self.variable_map = {}  # Mapping from (row, column) to variable index (int)
         self.solution_board = []  # Final solved board after assigning traps/gems
         self.unknown_vars = []  # List of variable indices for unknown cells ("_")
         self.var_assignment = []  # List indexed by variable, values: -1 (unset), 0 (gem), 1 (trap)
         self.num_rows = 0
-        self.num_cols = 0
+        self.num_columns = 0
         self.solved = False
 
     def is_clause_satisfied(self, clause):
@@ -44,7 +44,7 @@ class BruteforceSolver:
         self.cnf = [list(set(clause)) for clause in cnf]
         self.board = board
         self.variable_map = variable_map
-        self.num_rows, self.num_cols = len(board), len(board[0])
+        self.num_rows, self.num_columns = len(board), len(board[0])
         self.solved = False
         self.unknown_vars = []
 
@@ -52,7 +52,7 @@ class BruteforceSolver:
 
         # Identify unknown variables from the board
         for r in range(self.num_rows):
-            for c in range(self.num_cols):
+            for c in range(self.num_columns):
                 if board[r][c] == "_":
                     var_idx = variable_map[r, c]
                     self.unknown_vars.append(var_idx)
@@ -71,8 +71,8 @@ class BruteforceSolver:
                 ]
                 for var_idx in self.unknown_vars:
                     assigned_val = self.var_assignment[var_idx]
-                    x = (var_idx - 1) // self.num_cols
-                    y = (var_idx - 1) % self.num_cols
+                    x = (var_idx - 1) // self.num_columns
+                    y = (var_idx - 1) % self.num_columns
                     self.solution_board[x][y] = "T" if assigned_val == 1 else "G"
                 break
 
