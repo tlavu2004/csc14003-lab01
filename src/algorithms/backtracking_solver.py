@@ -5,26 +5,24 @@ class BacktrackingSolver:
         self.variable_map = {}
         self.solution = []
         self.assignments = []
-        self.unassigned_vars = []
+        self.unassigned_variables = []
         self.num_rows = 0
         self.num_cols = 0
         self.solved = False
-        self.var_to_clauses = {}
+        self.variable_to_clauses = {}
 
     def is_clause_satisfied(self, clause):
         for literal in clause:
-            var_idx = abs(literal)
-            assigned_val = self.assignments[var_idx]
-            if assigned_val == -1:
+            variable_idx = abs(literal)
+            assigned_value = self.assignments[variable_idx]
+            if assigned_value == -1:
                 return True
-            if literal > 0 and assigned_val == 1:
-                return True
-            if literal < 0 and assigned_val == 0:
+            if (literal > 0 and assigned_value == 1) or (literal < 0 and assigned_value == 0):
                 return True
         return False
 
-    def is_board_consistent_for_var(self, var):
-        for clause in self.var_to_clauses.get(var, []):
+    def is_assignment_consistent(self, variable_idx):
+        for clause in self.variable_to_clauses.get(variable_idx, []):
             if not self.is_clause_satisfied(clause):
                 return False
         return True
@@ -33,25 +31,25 @@ class BacktrackingSolver:
         if self.solved:
             return
 
-        if index == len(self.unassigned_vars):
+        if index == len(self.unassigned_variables):
             self.solved = True
             self.solution = [row[:] for row in self.board]
-            for var_idx in range(1, len(self.assignments)):
-                x = (var_idx - 1) // self.num_cols
-                y = (var_idx - 1) % self.num_cols
-                if self.assignments[var_idx] != -1:
-                    self.solution[x][y] = "T" if self.assignments[var_idx] == 1 else "G"
+            for variable_idx in range(1, len(self.assignments)):
+                row = (variable_idx - 1) // self.num_cols
+                col = (variable_idx - 1) % self.num_cols
+                if self.assignments[variable_idx] != -1:
+                    self.solution[row][col] = "T" if self.assignments[variable_idx] == 1 else "G"
             return
 
-        var = self.unassigned_vars[index]
+        variable_idx = self.unassigned_variables[index]
 
-        for val in [0, 1]:
-            self.assignments[var] = val
-            if self.is_board_consistent_for_var(var):
+        for assigned_value in [0, 1]:
+            self.assignments[variable_idx] = assigned_value
+            if self.is_assignment_consistent(variable_idx):
                 self.backtrack(index + 1)
                 if self.solved:
                     return
-            self.assignments[var] = -1
+            self.assignments[variable_idx] = -1
 
     def solve(self, board, cnf, variable_map):
         self.board = board
@@ -59,28 +57,24 @@ class BacktrackingSolver:
         self.variable_map = variable_map
         self.num_rows, self.num_cols = len(board), len(board[0])
         self.solved = False
+        self.variable_to_clauses = {}
 
-        max_var_idx = 0
-        self.var_to_clauses = {}
-
+        max_variable_index = 0
         for clause in self.cnf:
             for literal in clause:
-                var = abs(literal)
-                if var not in self.var_to_clauses:
-                    self.var_to_clauses[var] = []
-                self.var_to_clauses[var].append(clause)
-                max_var_idx = max(max_var_idx, var)
+                variable_idx = abs(literal)
+                self.variable_to_clauses.setdefault(variable_idx, []).append(clause)
+                max_variable_index = max(max_variable_index, variable_idx)
 
-        self.assignments = [-1] * (max_var_idx + 1)
+        self.assignments = [-1] * (max_variable_index + 1)
 
-        # Build and sort unassigned vars by number of related clauses (heuristic)
-        self.unassigned_vars = [
-            self.variable_map[r, c]
-            for r in range(self.num_rows)
-                for c in range(self.num_cols)
-                    if board[r][c] == "_"
+        self.unassigned_variables = [
+            self.variable_map[row, col]
+            for row in range(self.num_rows)
+            for col in range(self.num_cols)
+            if board[row][col] == "_"
         ]
-        self.unassigned_vars.sort(key=lambda var: -len(self.var_to_clauses.get(var, [])))  # descending
+        self.unassigned_variables.sort(key=lambda idx: -len(self.variable_to_clauses.get(idx, [])))
 
         self.backtrack()
 
