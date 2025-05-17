@@ -1,11 +1,11 @@
 class BruteforceSolver:
     def __init__(self):
         self.board = []  # 2D board with "_" (unknown), "T" (trap), or "G" (gem)
-        self.cnf = []  # CNF clauses representing game rules
-        self.variable_map = {}  # Mapping from (x, y) coordinates to variable index
-        self.solution_board = []  # Final solved board
-        self.unknown_variables = []  # List of variables corresponding to unknown cells
-        self.assignment = []  # List of assigned values (0 or 1) indexed by variable
+        self.cnf = []  # CNF clauses representing game rules (list of lists of literals)
+        self.variable_map = {}  # Mapping from (row, col) to variable index (int)
+        self.solution_board = []  # Final solved board after assigning traps/gems
+        self.unknown_vars = []  # List of variable indices for unknown cells ("_")
+        self.var_assignment = []  # List indexed by variable, values: -1 (unset), 0 (gem), 1 (trap)
         self.num_rows = 0
         self.num_cols = 0
         self.solved = False
@@ -13,67 +13,67 @@ class BruteforceSolver:
     def is_clause_satisfied(self, clause):
         """
         Check if a clause is satisfied by current assignment.
-        Each literal is satisfied if:
-        - Positive literal: its variable is assigned 1 (trap)
-        - Negative literal: its variable is assigned 0 (gem)
+        A literal is satisfied if:
+          - positive literal: assigned 1 (trap)
+          - negative literal: assigned 0 (gem)
         """
         for literal in clause:
-            variable_index = literal if literal > 0 else -literal
-            assigned_value = self.assignment[variable_index]
-            if (literal > 0 and assigned_value == 1) or (literal < 0 and assigned_value == 0):
+            var_idx = abs(literal)
+            assigned_val = self.var_assignment[var_idx]
+            if (literal > 0 and assigned_val == 1) or (literal < 0 and assigned_val == 0):
                 return True
         return False
 
-    def is_assignment_valid(self, bitmask):
+    def validate_assignment(self, bitmask):
         """
-        Assign a truth value to each unknown variable based on the current bitmask.
-        Then check if all clauses are satisfied (early pruning applied).
+        Assign truth values to unknown variables according to bitmask.
+        Use bit operations for speed instead of string conversion.
+        Return True if all CNF clauses satisfied; else False.
         """
-        bit_string = bin(bitmask)[2:].zfill(len(self.unknown_variables))  # Precompute bits as string
-        for i, variable_index in enumerate(self.unknown_variables):
-            self.assignment[variable_index] = int(bit_string[i])
+        for i, var_idx in enumerate(self.unknown_vars):
+            val = (bitmask >> i) & 1  # extract bit i
+            self.var_assignment[var_idx] = val
 
-        # Early exit if any clause is not satisfied
         for clause in self.cnf:
             if not self.is_clause_satisfied(clause):
                 return False
         return True
 
     def solve(self, board, cnf, variable_map):
+        # Remove duplicate literals in clauses to optimize
+        self.cnf = [list(set(clause)) for clause in cnf]
         self.board = board
-        self.cnf = [list(set(clause)) for clause in cnf] # Remove duplicate literals in each clause
         self.variable_map = variable_map
         self.num_rows, self.num_cols = len(board), len(board[0])
         self.solved = False
-        self.unknown_variables = []
+        self.unknown_vars = []
 
-        # Determine the maximum variable index to size the assignment list
-        max_variable_index = 0
+        max_var_idx = 0
 
-        # Identify unknown positions and initialize variable list
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
-                if board[row][col] == "_":
-                    variable_index = variable_map[row, col]
-                    self.unknown_variables.append(variable_index)
-                    max_variable_index = max(max_variable_index, variable_index)
+        # Identify unknown variables from the board
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                if board[r][c] == "_":
+                    var_idx = variable_map[r, c]
+                    self.unknown_vars.append(var_idx)
+                    max_var_idx = max(max_var_idx, var_idx)
 
-        self.assignment = [-1] * (max_variable_index + 1)  # Use list instead of dict for faster access
+        # Initialize assignments: -1 means unassigned
+        self.var_assignment = [-1] * (max_var_idx + 1)
 
-        # Try all possible 2^n combinations of truth assignments
-        for bitmask in range(1 << len(self.unknown_variables)):
-            if self.is_assignment_valid(bitmask):
+        # Brute force all combinations of assignments for unknown vars
+        for bitmask in range(1 << len(self.unknown_vars)):
+            if self.validate_assignment(bitmask):
                 self.solved = True
-
-                # Construct solution board only once, avoiding deepcopy
+                # Build solution board (avoid deepcopy by reconstructing)
                 self.solution_board = [
                     [None if cell == "_" else cell for cell in row] for row in board
                 ]
-                for variable_index in self.unknown_variables:
-                    assigned_value = self.assignment[variable_index]
-                    x = (variable_index - 1) // self.num_cols
-                    y = (variable_index - 1) % self.num_cols
-                    self.solution_board[x][y] = "T" if assigned_value == 1 else "G"
-                break  # Stop at the first valid solution
+                for var_idx in self.unknown_vars:
+                    assigned_val = self.var_assignment[var_idx]
+                    x = (var_idx - 1) // self.num_cols
+                    y = (var_idx - 1) % self.num_cols
+                    self.solution_board[x][y] = "T" if assigned_val == 1 else "G"
+                break
 
         return self.solution_board if self.solved else None
