@@ -1,28 +1,21 @@
 class BacktrackingSolver:
     def __init__(self):
-        self.board = []  # Input board: 2D list with "_" (unknown), "T", "G"
-        self.cnf = []  # List of clauses (list of literals)
-        self.variable_map = {}  # Mapping (row, col) -> variable index (int)
-        self.solution = []  # Final solution board after assignment
-        self.assignments = []  # List indexed by variable index, values: -1 (unset), 0 (gem), 1 (trap)
-        self.unassigned_vars = []  # List of variable indices yet to assign
+        self.board = []
+        self.cnf = []
+        self.variable_map = {}
+        self.solution = []
+        self.assignments = []
+        self.unassigned_vars = []
         self.num_rows = 0
         self.num_cols = 0
         self.solved = False
+        self.var_to_clauses = {}
 
     def is_clause_satisfied(self, clause):
-        """
-        Check if the clause is satisfied by current assignments.
-        A clause is satisfied if any literal evaluates to True:
-        - For positive literal: variable assigned 1 (trap)
-        - For negative literal: variable assigned 0 (gem)
-        - If variable not assigned (-1), treat literal as potentially satisfied (optimistic)
-        """
         for literal in clause:
             var_idx = abs(literal)
             assigned_val = self.assignments[var_idx]
             if assigned_val == -1:
-                # Variable not assigned yet, clause might still be satisfiable
                 return True
             if literal > 0 and assigned_val == 1:
                 return True
@@ -30,12 +23,8 @@ class BacktrackingSolver:
                 return True
         return False
 
-    def is_board_consistent(self):
-        """
-        Check if all clauses are satisfied or still possibly satisfiable
-        under current partial assignments.
-        """
-        for clause in self.cnf:
+    def is_board_consistent_for_var(self, var):
+        for clause in self.var_to_clauses.get(var, []):
             if not self.is_clause_satisfied(clause):
                 return False
         return True
@@ -43,10 +32,9 @@ class BacktrackingSolver:
     def backtrack(self, index=0):
         if self.solved:
             return
+
         if index == len(self.unassigned_vars):
-            # All variables assigned without conflict -> solution found
             self.solved = True
-            # Copy the board and fill in assigned values
             self.solution = [row[:] for row in self.board]
             for var_idx in range(1, len(self.assignments)):
                 x = (var_idx - 1) // self.num_cols
@@ -57,36 +45,43 @@ class BacktrackingSolver:
 
         var = self.unassigned_vars[index]
 
-        for val in [0, 1]:  # Try gem=0 and trap=1
+        for val in [0, 1]:
             self.assignments[var] = val
-            if self.is_board_consistent():
+            if self.is_board_consistent_for_var(var):
                 self.backtrack(index + 1)
                 if self.solved:
                     return
-            self.assignments[var] = -1  # Reset on backtrack
+            self.assignments[var] = -1
 
     def solve(self, board, cnf, variable_map):
         self.board = board
-        self.cnf = [list(set(clause)) for clause in cnf]  # Remove duplicate literals
+        self.cnf = [list(set(clause)) for clause in cnf]
         self.variable_map = variable_map
         self.num_rows, self.num_cols = len(board), len(board[0])
         self.solved = False
-        self.unassigned_vars = []
 
         max_var_idx = 0
-        # Initialize assignments with -1 (unset)
-        for r in range(self.num_rows):
-            for c in range(self.num_cols):
-                if board[r][c] == "_":
-                    var_idx = variable_map[r, c]
-                    self.unassigned_vars.append(var_idx)
-                    max_var_idx = max(max_var_idx, var_idx)
+        self.var_to_clauses = {}
+
+        for clause in self.cnf:
+            for literal in clause:
+                var = abs(literal)
+                if var not in self.var_to_clauses:
+                    self.var_to_clauses[var] = []
+                self.var_to_clauses[var].append(clause)
+                max_var_idx = max(max_var_idx, var)
 
         self.assignments = [-1] * (max_var_idx + 1)
 
+        # Build and sort unassigned vars by number of related clauses (heuristic)
+        self.unassigned_vars = [
+            self.variable_map[r, c]
+            for r in range(self.num_rows)
+                for c in range(self.num_cols)
+                    if board[r][c] == "_"
+        ]
+        self.unassigned_vars.sort(key=lambda var: -len(self.var_to_clauses.get(var, [])))  # descending
+
         self.backtrack()
 
-        if self.solved:
-            return self.solution
-        else:
-            return None
+        return self.solution if self.solved else None
