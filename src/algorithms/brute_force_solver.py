@@ -1,4 +1,4 @@
-class BruteforceSolver:
+class BruteForceSolver:
     def __init__(self):
         self.board = []  # 2D board with "_" (unknown), "T" (trap), or "G" (gem)
         self.cnf = []  # CNF clauses representing game rules (list of lists of literals)
