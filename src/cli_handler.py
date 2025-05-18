@@ -52,6 +52,9 @@ def run_algorithm(input_path: str, algorithm_name: str):
     output_path = input_file.replace("input", f"output")
     full_output_path = os.path.join("testcases", "output", output_path)
 
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(full_output_path), exist_ok=True)
+
     result = export_output(input_path, solution, algorithm_name, runtime)
     with open(full_output_path, "w", encoding="utf-8") as f:
         f.write(result)
