@@ -1,6 +1,6 @@
 import os
 import time
-from .core import storage
+from .core.storage import Storage
 from .core.cnf_generator import CNFGenerator
 from .core.io_handler import load_input, export_output
 from .algorithms.pysat_solver import PySATSolver
@@ -21,9 +21,9 @@ def run_algorithm(input_path: str, algorithm_name: str):
     board = load_input(input_path)
     cnf, variable_map = CNFGenerator().generate_cnf(board)
 
-    storage.board = board
-    storage.cnf = cnf
-    storage.variable_map = variable_map
+    Storage.board = board
+    Storage.cnf = cnf
+    Storage.variable_map = variable_map
 
     # Initialize the selected algorithm
     solver = ALGORITHMS[algorithm_name]
