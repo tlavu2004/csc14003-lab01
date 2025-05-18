@@ -3,3 +3,6 @@
 
 # Python
 **/__pycache__/
+
+# Ignore generated output files
+testcases/output/
