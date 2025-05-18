@@ -19,11 +19,11 @@ def run_algorithm(input_path: str, algorithm_name: str):
         return
 
     board = load_input(input_path)
-    cnf, var_map = CNFGenerator().generate_cnf(board)
+    cnf, variable_map = CNFGenerator().generate_cnf(board)
 
     storage.board = board
     storage.cnf = cnf
-    storage.var_map = var_map
+    storage.variable_map = variable_map
 
     # Khởi tạo solver với cnf
     solver = ALGORITHMS[algorithm_name]
@@ -37,14 +37,14 @@ def run_algorithm(input_path: str, algorithm_name: str):
         runtime = end - start
 
         if satisfiable:
-            solution = solver.interpret_model_as_board(board, var_map)
+            solution = solver.interpret_model_as_board(board, variable_map)
         else:
             solution = None
 
     else:
-        # Các thuật toán khác, giả sử vẫn giữ nguyên tham số solve(board, cnf, var_map)
+        # Các thuật toán khác, giả sử vẫn giữ nguyên tham số solve(board, cnf, variable_map)
         start = time.perf_counter()
-        solution = solver.solve(board, cnf, var_map)
+        solution = solver.solve(board, cnf, variable_map)
         end = time.perf_counter()
         runtime = end - start
 
