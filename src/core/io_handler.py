@@ -1,3 +1,5 @@
+from . import Storage
+
 def load_input(file_path: str) -> list[list[int | str]]:
     """
     Load the input board from a file.
@@ -81,7 +83,6 @@ def export_output(input_path: str, solution: list[list[str]], algorithm: str, ru
     if solution is None:
         return f"Algorithm: {algorithm}\nNo solution found.\n"
 
-    from . import storage
-    cnfs = len(storage.cnf)
+    cnfs = len(Storage.cnf)
 
     return _format_solution_output(algorithm, input_path, solution, runtime, cnfs)
