@@ -25,11 +25,11 @@ def run_algorithm(input_path: str, algorithm_name: str):
     storage.cnf = cnf
     storage.variable_map = variable_map
 
-    # Khởi tạo solver với cnf
+    # Initialize the selected algorithm
     solver = ALGORITHMS[algorithm_name]
 
     if algorithm_name == "Pysat":
-        # PysatSolver cần khởi tạo với clause, và gọi solve() không tham số
+        # PysatSolver requires CNF and variable_map to be passed directly to the solver
         solver = PySATSolver(cnf)
         start = time.perf_counter()
         satisfiable = solver.solve()
@@ -42,7 +42,7 @@ def run_algorithm(input_path: str, algorithm_name: str):
             solution = None
 
     else:
-        # Các thuật toán khác, giả sử vẫn giữ nguyên tham số solve(board, cnf, variable_map)
+        # For other algorithms, we pass the board and variable_map directly to the solver
         start = time.perf_counter()
         solution = solver.solve(board, cnf, variable_map)
         end = time.perf_counter()
