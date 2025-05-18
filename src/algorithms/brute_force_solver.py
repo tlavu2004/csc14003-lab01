@@ -65,15 +65,19 @@ class BruteForceSolver:
         for bitmask in range(1 << len(self.unknown_vars)):
             if self.validate_assignment(bitmask):
                 self.solved = True
-                # Build solution board (avoid deepcopy by reconstructing)
-                self.solution_board = [
-                    [None if cell == "_" else cell for cell in row] for row in board
-                ]
-                for var_idx in self.unknown_vars:
-                    assigned_val = self.var_assignment[var_idx]
-                    x = (var_idx - 1) // self.num_columns
-                    y = (var_idx - 1) % self.num_columns
-                    self.solution_board[x][y] = "T" if assigned_val == 1 else "G"
+                # Build solution board (all entries as strings)
+                self.solution_board = []
+                for r in range(self.num_rows):
+                    row_result = []
+                    for c in range(self.num_columns):
+                        cell = board[r][c]
+                        if cell == "_":
+                            var_idx = variable_map[r, c]
+                            assigned_val = self.var_assignment[var_idx]
+                            row_result.append("T" if assigned_val == 1 else "G")
+                        else:
+                            row_result.append(str(cell))  # Convert non-'_' cells (e.g., int) to str
+                    self.solution_board.append(row_result)
                 break
 
         return self.solution_board if self.solved else None
