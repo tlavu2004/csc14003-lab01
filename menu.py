@@ -18,6 +18,7 @@ def clear_screen():
 
 def print_testcase_menu():
     print("GEM HUNTER PROGRAM")
+    print("---")
     print("AUTHOR: Trương Lê Anh Vũ.")
     print("STUDENT ID: 22120443.")
     print("---")
@@ -46,10 +47,13 @@ def main():
             continue
 
         input_path = TESTCASES[tc_choice]
+        size = 5 * 2**(int(tc_choice) - 1) + (int(tc_choice) + 1) % 2
         
+        clear_screen()
         with open(input_path, "r", encoding="utf-8") as f:
             content = f.read()
-        print(f"Bản đồ đã chọn {tc_choice}:")
+        print(f"Map chosen: {tc_choice} - {size}*{size}")
+        print("Content of the map:")
         print(content)
 
         print_algorithm_menu()
