@@ -41,6 +41,7 @@ def main():
         print_testcase_menu()
         tc_choice = input("Choose testcase: ").strip()
         if tc_choice == "0":
+            clear_screen()
             break
         if tc_choice not in TESTCASES:
             input("Invalid choice. Press Enter to continue...")
