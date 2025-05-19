@@ -23,7 +23,7 @@ def print_testcase_menu():
     print("---")
     print("List of testcases:")
     for key, path in TESTCASES.items():
-        size = os.path.basename(path).split("_")[1].split(".")[0]
+        size = 5 * 2**(int(key) - 1) + (int(key) + 1) % 2
         print(f"{key}. Testcase {key}: {size}*{size}")
     print("0. Exit")
 
@@ -46,7 +46,7 @@ def main():
             continue
 
         input_path = TESTCASES[tc_choice]
-        clear_screen()
+        
         with open(input_path, "r", encoding="utf-8") as f:
             content = f.read()
         print(f"Bản đồ đã chọn {tc_choice}:")
@@ -62,7 +62,8 @@ def main():
 
         algorithm_name = ALGORITHMS[algo_choice]
 
-        print("\nRunning algorithm...\n")
+        clear_screen()
+        print("Running algorithm...\n")
         subprocess.run(["python", "-m", "src.main", input_path, algorithm_name])
 
         cont = input("\nDo you want to continue?\n1. Yes\n0. No\nChoose: ").strip()
