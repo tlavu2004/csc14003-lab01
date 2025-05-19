@@ -73,6 +73,7 @@ def main():
 
         cont = input("\nDo you want to continue?\n1. Yes\n0. No\nChoose: ").strip()
         if cont != "1":
+            clear_screen()
             break
 
 if __name__ == "__main__":
