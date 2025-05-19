@@ -23,7 +23,7 @@ Make sure `pip` is available after installation.
 
 #### Step 2: Download the source code
 
-- **Option 1**: Unzip the provided `.zip` file from the submission.
+- **Option 1**: Unzip the provided `22120443.zip` file from the submission.
 - **Option 2**: Clone from GitHub:
 
   ```bash
