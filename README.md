@@ -1,4 +1,4 @@
-# Lab: Gem Hunter – CSC14003 - Intrduction to Artifical Intelligence
+# Lab: Gem Hunter
 
 **Gem Hunter** is a grid-based puzzle solver that uses multiple algorithmic strategies (SAT solver, brute-force, backtracking) to find optimal paths, avoid traps, and collect gems. This project was developed as part of the **Intrduction to Artifical Intelligence (CSC14003)** course.
 
@@ -77,7 +77,7 @@ Each output file includes:
 
 ---
 
-### Cách 2: **Use interactive CLI menu**
+### Method 2: **Use interactive CLI menu**
 
 #### Run the interface:
 
@@ -85,7 +85,7 @@ Each output file includes:
 python menu.py
 ```
 
-#### 🔹 Tính năng:
+#### Features:
 
 - Select an **input file** from a list of testcases
 - Choose an **algorithm** from the menu (Pysat, Bruteforce, Backtracking)
@@ -137,6 +137,6 @@ csc14003-lab01-gem-hunter/
 
 ---
 
-## Tác giả
+## Author
 
-- **Trương Lê Anh Vũ** – [GitHub Profile](https://github.com/tlavu2004)
+- **Trương Lê Anh Vũ - 22120443** – [GitHub Profile](https://github.com/tlavu2004)
